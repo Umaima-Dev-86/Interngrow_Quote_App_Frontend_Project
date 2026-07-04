@@ -1,0 +1,33 @@
+/* Updated for better visibility in screen recording */
+  
+  .panel-trigger {
+    background: #000000; border: 2px solid var(--neon-cyan); color: var(--neon-cyan);
+    font-size: 16px; font-weight: 800; padding: 14px 24px; border-radius: 30px;
+    cursor: pointer; box-shadow: 0 0 15px rgba(0,242,254,0.3); transition: all 0.2s;
+  }
+
+  .mood-chip {
+    padding: 16px 30px; border-radius: 999px; font-size: 16px; font-weight: 700; 
+    background: rgba(4, 4, 8, 0.8); border: 1px solid rgba(255, 255, 255, 0.15); 
+    color: rgba(255,255,255,0.85); backdrop-filter: blur(20px); cursor: pointer; transition: all 0.2s ease;
+  }
+
+  .side-btn {
+    background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255,255,255,0.1); color: white;
+    font-size: 15px; font-weight: 700; padding: 18px 22px; border-radius: 14px; text-align: left; cursor: pointer; transition: all 0.2s ease;
+  }
+
+  .dock-btn-circle{
+    width: 80px; height: 80px; /* Badha kar 80px kar diya */
+    background:rgba(0,0,0,0.85); border: 2px solid rgba(255, 255, 255, 0.15); 
+    color:white; font-size:28px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; 
+    backdrop-filter:blur(20px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: all 0.25s ease;
+  }
+  
+  .dock-btn-circle svg{ width: 32px; height: 32px; /* Icons ka size bhi barha diya */ }
+
+  .dock-btn-main{
+    flex:1 1 auto; max-width: 360px; height: 80px; border-radius: 40px; 
+    background: #000000; color: var(--neon-cyan); font-weight:800; font-size:18px; border: 2px solid var(--neon-cyan); cursor:pointer; 
+    box-shadow: 0 0 25px rgba(0, 242, 254, 0.3); text-transform:uppercase; letter-spacing:0.05em; transition: all 0.25s ease;
+  }
