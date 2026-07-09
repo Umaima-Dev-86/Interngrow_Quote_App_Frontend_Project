@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Musing — Ultra Large & Light Buttons Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Fraunces:opsz,wght=9..144,400;9..144,600;9..144,700&family=Work+Sans:wght=500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #ffffff;
+    --ink-sub: rgba(255, 255, 255, 0.85);
+    --neon-cyan: #00ffff; /* Much lighter, ultra bright cyan */
+    --neon-magenta: #ff66aa; /* Light soft magenta */
+    --mood-accent: #00ffff;
+    --text-align: center;
+    --font-scale: 1.1;
+    --bg-blur: 0px;
+    --bg-brightness: 0.55;
+    --font-family-chosen: 'Fraunces', serif;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%; margin:0; font-family:'Work Sans', sans-serif; background:#010103; color:#ffffff; overflow:hidden;}
+  
+  .stage{
+    position:relative; 
+    height:100vh; height:100dvh; 
+    width:100vw; 
+    overflow:hidden;
+  }
+  
+  .bg-layer{
+    position:absolute; inset:0; 
+    background-size:cover; 
+    background-position:center; 
+    background-repeat: no-repeat;
+    transition: opacity 0.4s ease-in-out, filter 0.2s ease; 
+    z-index: 1;
+    filter: brightness(var(--bg-brightness)) blur(var(--bg-blur));
+  }
+  .bg-layer.fading{opacity:0; z-index: 0;}
+  
+  .bg-wash{
+    position:absolute; inset:0; 
+    background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.9) 100%); 
+    z-index:2; pointer-events:none;
+  }
+
+  .topbar{position:absolute; top:0; left:0; right:0; padding:28px 40px; display:flex; align-items:center; justify-content:space-between; z-index:10;}
+  .wordmark{font-family:'Fraunces', serif; font-weight:700; font-size:32px; color:#ffffff; text-shadow:0 0 20px var(--neon-cyan); letter-spacing:-0.01em;}
+  .wordmark span{color:var(--neon-magenta); font-weight: 800; text-shadow:0 0 15px var(--neon-magenta);}
+
+  /* ULTRA LARGE TOP OPTIONS TRIGGER */
+  .panel-trigger {
+    background: #000000; border: 3.5px solid var(--neon-cyan); color: var(--neon-cyan);
+    font-size: 18px; font-weight: 900; padding: 18px 36px; border-radius: 35px;
+    cursor: pointer; box-shadow: 0 0 25px rgba(0,255,255,0.6); transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .panel-trigger:hover { background: var(--neon-cyan); color: black; box-shadow: 0 0 35px var(--neon-cyan); }
+
+  /* CAROUSEL CHIPS CHANNELS (LARGER & LIGHTER) */
+  .moods-carousel{
+    position:absolute; top:125px; left:0; right:0; z-index:10; 
+    display:flex; justify-content: center; flex-wrap: wrap; gap:16px; padding:10px 40px;
+  }
+  
+  .mood-chip {
+    padding: 16px 32px; border-radius: 999px; font-size: 16px; font-weight: 800; 
+    background: rgba(15, 15, 25, 0.9); border: 2px solid rgba(255, 255, 255, 0.4); 
+    color: #ffffff; backdrop-filter: blur(20px); cursor: pointer; transition: all 0.2s ease;
+  }
+  .mood-chip:hover { border-color: var(--neon-cyan); box-shadow: 0 0 22px rgba(0, 255, 255, 0.6); }
+  .mood-chip.active { background: #ffffff; border-color: var(--neon-cyan); color: #000000; box-shadow: 0 0 30px rgba(0, 255, 255, 0.8); }
+
+  .card-wrap{
+    position:absolute; inset:0; z-index:5; padding:0 60px; 
+    display:flex; flex-direction:column; justify-content:center; align-items:center; pointer-events:none;
+  }
+  
+  .production-card{ max-width:850px; width:100%; text-align: var(--text-align); transition: all 0.3s ease; padding: 40px; border-radius: 24px; }
+  .production-card.glass-enabled {
+    background: rgba(0, 0, 0, 0.6); border: 3px solid var(--mood-accent);
+    backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); box-shadow: 0 0 45px rgba(0, 255, 255, 0.4);
+  }
+
+  .quote-mark{
+    font-family:'Fraunces', serif; font-size:120px; color:var(--mood-accent); 
+    display:block; margin-bottom:15px; line-height:0.1; text-shadow: 0 0 25px var(--mood-accent);
+  }
+  .quote-display{
+    font-family: var(--font-family-chosen); font-weight:700; font-size: calc(36px * var(--font-scale)); 
+    line-height:1.55; color: var(--ink); text-shadow: 0 4px 25px rgba(0,0,0,0.95); min-height:130px; transition: font-size 0.2s, font-family 0.3s;
+  }
+  
+  .quote-display.pulse-active { animation: neonTextGlow 2s infinite alternate; }
+  @keyframes neonTextGlow {
+    0% { text-shadow: 0 4px 25px rgba(0,0,0,0.95); }
+    100% { text-shadow: 0 0 20px var(--mood-accent), 0 4px 25px rgba(0,0,0,0.95); }
+  }
+
+  .card-divider{ width:100px; height:6px; background:var(--mood-accent); margin:32px auto 24px; border-radius:3px; box-shadow: 0 0 20px var(--mood-accent); display: inline-block; }
+  .author-display{ font-family: var(--font-family-chosen); font-size:22px; font-weight:700; color: var(--ink-sub); letter-spacing:0.02em; text-shadow: 0 3px 15px rgba(0,0,0,0.95); }
+
+  /* WIDER SIDE PANEL WITH MASSIVE HIGH-CONTRAST LIGHT BUTTONS */
+  .side-options-panel {
+    position: absolute; right: -400px; top: 0; bottom: 0; width: 380px;
+    background: rgba(10, 10, 15, 0.98); border-left: 3.5px solid var(--neon-cyan);
+    z-index: 50; padding: 120px 24px 40px; display: flex; flex-direction: column; gap: 20px;
+    backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); box-shadow: -15px 0 50px rgba(0,0,0,0.9);
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto;
+  }
+  .side-options-panel.open { right: 0; }
+  .panel-title { font-size: 16px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; color: var(--neon-cyan); margin-bottom: 5px; border-bottom: 2px solid rgba(0,255,255,0.4); padding-bottom: 10px; }
+
+  .side-btn {
+    background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255,255,255,0.3); color: #ffffff;
+    font-size: 17px; font-weight: 800; padding: 18px 22px; border-radius: 16px; text-align: left; cursor: pointer; transition: all 0.2s ease;
+  }
+  .side-btn:hover { background: rgba(0, 255, 255, 0.25); border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(0, 255, 255, 0.6); }
+  .side-btn.active-toggle { background: var(--neon-cyan); color: #000000; border-color: var(--neon-cyan); box-shadow: 0 0 25px rgba(0, 255, 255, 0.7); }
+
+  .timeline-frame{position:absolute; top:260px; left:40px; right:40px; height:5px; background:rgba(255,255,255,0.1); z-index:10; border-radius:3px;}
+  .timeline-bar{height:100%; width:0%; background:var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); transition:width 8.5s linear; border-radius:3px;}
+
+  /* 🚨 GIGANTIC BOTTOM DOCK DESIGN FOR AMAZING VISIBILITY IN RECORDINGS 🚨 */
+  .bottom-dock{position:absolute; left:0; right:0; bottom:0; z-index:15; padding:45px; display:flex; align-items:center; justify-content:center; gap:28px;}
+  
+  .dock-btn-circle{
+    width:96px; height:96px; background:rgba(5, 5, 10, 0.95); border: 3.5px solid #ffffff; 
+    color:#ffffff; font-size:32px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; 
+    backdrop-filter:blur(20px); box-shadow: 0 12px 35px rgba(0,0,0,0.7); transition: all 0.25s ease;
+  }
+  .dock-btn-circle:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 35px var(--neon-cyan); transform: scale(1.12) translateY(-4px); }
+  .dock-btn-circle svg{width:40px; height:40px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round;}
+  
+  .dock-btn-main{
+    flex:1 1 auto; max-width:440px; height:92px; border-radius:46px; 
+    background: #000000; color: var(--neon-cyan); font-weight:900; font-size:22px; border: 3.5px solid var(--neon-cyan); cursor:pointer; 
+    box-shadow: 0 0 35px rgba(0, 255, 255, 0.6); text-transform:uppercase; letter-spacing:0.08em; transition: all 0.25s ease;
+  }
+  .dock-btn-main:hover{ transform: translateY(-6px); box-shadow: 0 0 50px var(--neon-cyan); color: #000000; background: var(--neon-cyan); }
+
+  .toast-alert{
+    position:absolute; bottom:260px; left:50%; transform:translateX(-50%); z-index:100; 
+    background:#010103; color:var(--neon-cyan); padding:16px 36px; border-radius:14px; font-size:16px; opacity:0; pointer-events:none;
+    transition:opacity 0.3s; border:2.5px solid var(--neon-cyan); font-weight:800; box-shadow:0 0 25px rgba(0,255,255,0.6);
+  }
+  .toast-alert.active{opacity:1;}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="bg-layer" id="bgA"></div>
+  <div class="bg-layer fading" id="bgB"></div>
+  <div class="bg-wash"></div>
+
+  <div class="topbar">
+    <div class="wordmark">Musing<span>LIGHT LINE</span></div>
+    <button class="panel-trigger" id="panelTrigger">OPTIONS ⚙️</button>
+  </div>
+
+  <div class="moods-carousel" id="carouselTrack"></div>
+  <div class="timeline-frame"><div class="timeline-bar" id="timelineBar"></div></div>
+
+  <div class="card-wrap">
+    <div class="production-card" id="mainCardFrame">
+      <span class="quote-mark" id="quoteMarkNode">&#8220;</span>
+      <div class="quote-display pulse-active" id="quoteDisplayBox">Ready to sync states...</div>
+      <div class="card-divider" id="divider"></div>
+      <div class="author-display" id="authorDisplayBox">— Core Matrix</div>
+    </div>
+  </div>
+
+  <div class="side-options-panel" id="sidePanel">
+    <div class="panel-title">Text Options</div>
+    <button class="side-btn" id="btnCustomText">Custom Text ✍️</button>
+    <button class="side-btn" id="btnFontTheme">Font Style 🎭</button>
+    <button class="side-btn" id="btnAlign">Align Layout 🎯</button>
+    <div style="display:flex; gap:10px;">
+      <button class="side-btn" id="btnFontDec" style="flex:1; text-align:center;">A−</button>
+      <button class="side-btn" id="btnFontInc" style="flex:1; text-align:center;">A+</button>
+    </div>
+
+    <div class="panel-title" style="margin-top:15px;">Visual FX</div>
+    <button class="side-btn" id="btnToggleGlow">Glow Burst 💥</button>
+    <button class="side-btn" id="btnBlurInc">Blur BG 🌫️</button>
+    <button class="side-btn" id="btnBlurReset">Reset Blur ⚡</button>
+    <button class="side-btn" id="btnToggleGlass">Glass Frame 🧊</button>
+    <button class="side-btn" id="btnExposure">Exposure: MID 🌗</button>
+    <button class="side-btn" id="btnToggleLoop">Auto Stream 🔄</button>
+  </div>
+
+  <div class="toast-alert" id="appNotificationToast"></div>
+
+  <div class="bottom-dock">
+    <button class="dock-btn-circle" id="copyTextBtn" title="Copy Text">
+      <svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+    </button>
+    <button class="dock-btn-main" id="nextStateBtn">Next Wallpaper State</button>
+    <button class="dock-btn-circle" id="exportAssetBtn" title="Download Wallpaper">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+    </button>
+  </div>
+</div>
+
+<canvas id="renderCanvas" style="display:none;"></canvas>
+
+<script>
+(function(){
+  let activeCategory = "all";
+  let bgSwapFlag = false;
+  let loopTimerReference = null;
+  let autoAdvanceActive = true;
+  let activeLoadedPayload = null;
+  let currentBlurVal = 0;
+  let currentBrightnessIdx = 1; 
+  let lastAssignedImageId = 0;
+  const brightnessConfigs = [0.25, 0.55, 0.85];
+  const brightnessLabels = ["DARK 🌙", "MID 🌗", "HIGH ☀️"];
+  
+  const LOOP_INTERVAL = 8500; 
+  let currentFontScale = 1.1;
+  let currentAlignIdx = 0; 
+  const alignmentModes = ['center', 'left', 'right'];
+
+  let currentFontThemeIdx = 0;
+  const fontThemes = ["'Fraunces', serif", "'Work Sans', sans-serif", "'Courier Prime', monospace"];
+  const fontThemeNames = ["Classic Serif", "Modern Minimal", "Retro Cyber"];
+
+  const sidePanel = document.getElementById('sidePanel');
+  const panelTrigger = document.getElementById('panelTrigger');
+  panelTrigger.addEventListener('click', () => {
+    sidePanel.classList.toggle('open');
+    panelTrigger.textContent = sidePanel.classList.contains('open') ? "CLOSE ✖" : "OPTIONS ⚙️";
+  });
+
+  document.querySelector('.card-wrap').addEventListener('click', () => {
+    if(sidePanel.classList.contains('open')) {
+      sidePanel.classList.remove('open');
+      panelTrigger.textContent = "OPTIONS ⚙️";
+    }
+  });
+
+  const WORKLOAD_SEGMENTS = [
+    { key:"all", label:"🌌 Deep Mix", color:"#00ffff" },
+    { key:"love", label:"❤️ Romance", color:"#ff66aa" },
+    { key:"success", label:"🏆 Empire", color:"#ffcc00" },
+    { key:"motivation", label:"🚀 Motivation", color:"#ff4455" },
+    { key:"peace", label:"🧘 Serene Calm", color:"#33ff77" },
+    { key:"destiny", label:"🎰 Cyber Destiny", color:"#b577ff" }
+  ];
+
+  const CORE_LOCAL_QUOTES = [
+    {text:"The obstacle in the path becomes the path. Within every obstacle is an opportunity.", author:"Marcus Aurelius", mood:"all"},
+    {text:"Discipline is choosing between what you want now and what you want most.", author:"Abraham Lincoln", mood:"all"},
+    {text:"Almost everything will work again if you unplug it for a few minutes, including you.", author:"Anne Lamott", mood:"peace"},
+    {text:"The quieter you become, the more you are able to hear.", author:"Rumi", mood:"peace"},
+    {text:"To love and be loved is to feel the sun from both sides.", author:"David Viscott", mood:"love"},
+    {text:"Success is not final, failure is not fatal: it is the courage to continue that counts.", author:"Winston Churchill", mood:"success"},
+    {text:"The only way to predict the future is to have the power to shape it completely.", author:"Neo Matrix Engine", mood:"destiny"},
+    {text:"Fate loves the fearless. Step into the grid and code your own reality.", author:"Digital Architect", mood:"destiny"},
+    {text:"Push yourself, because no one else is going to do it for you.", author:"Unknown", mood:"motivation"}
+  ];
+
+  const carouselTrack = document.getElementById('carouselTrack');
+  WORKLOAD_SEGMENTS.forEach(seg => {
+    const chip = document.createElement('button');
+    chip.className = 'mood-chip' + (seg.key === activeCategory ? ' active' : '');
+    chip.textContent = seg.label;
+    chip.addEventListener('click', () => {
+      activeCategory = seg.key;
+      document.querySelectorAll('.mood-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      triggerManualPipelineAdvance();
+    });
+    carouselTrack.appendChild(chip);
+  });
+
+  function syncWorkloadPipelineData() {
+    document.getElementById('nextStateBtn').disabled = true;
+    
+    let bundle = activeCategory === 'all' ? CORE_LOCAL_QUOTES : CORE_LOCAL_QUOTES.filter(x => x.mood === activeCategory);
+    if(bundle.length === 0) bundle = CORE_LOCAL_QUOTES;
+    const activeObject = bundle[Math.floor(Math.random() * bundle.length)];
+    activeLoadedPayload = activeObject;
+    
+    let newImgId = Math.floor(Math.random() * 1000) + 1;
+    while(newImgId === lastAssignedImageId) { newImgId = Math.floor(Math.random() * 1000) + 1; }
+    lastAssignedImageId = newImgId;
+    
+    const liveDynamicUrl = `https://picsum.photos/id/${newImgId}/1920/1080`;
+    dispatchViewLayerRender(activeObject.text, activeObject.author, liveDynamicUrl);
+  }
+
+  function dispatchViewLayerRender(quoteText, authorText, assetImageUrl) {
+    const meta = WORKLOAD_SEGMENTS.find(s => s.key === activeCategory) || WORKLOAD_SEGMENTS[0];
+    document.documentElement.style.setProperty('--mood-accent', meta.color);
+    document.documentElement.style.setProperty('--neon-cyan', meta.color);
+
+    const currentActiveLayer = bgSwapFlag ? document.getElementById('bgB') : document.getElementById('bgA');
+    const currentHiddenLayer = bgSwapFlag ? document.getElementById('bgA') : document.getElementById('bgB');
+
+    const imgWorker = new Image();
+    imgWorker.src = assetImageUrl;
+    imgWorker.onload = () => {
+      currentHiddenLayer.style.backgroundImage = `url("${assetImageUrl}")`;
+      currentHiddenLayer.classList.remove('fading');
+      currentActiveLayer.classList.add('fading');
+      bgSwapFlag = !bgSwapFlag;
+      
+      document.getElementById('quoteDisplayBox').textContent = quoteText;
+      document.getElementById('authorDisplayBox').textContent = "— " + authorText;
+      
+      document.getElementById('nextStateBtn').disabled = false;
+    };
+    
+    imgWorker.onerror = () => {
+      const fallbackSeed = Math.floor(Math.random() * 100);
+      const fallbackUrl = `https://picsum.photos/1920/1080?random=${fallbackSeed}`;
+      currentHiddenLayer.style.backgroundImage = `url("${fallbackUrl}")`;
+      currentHiddenLayer.classList.remove('fading');
+      currentActiveLayer.classList.add('fading');
+      bgSwapFlag = !bgSwapFlag;
+
+      document.getElementById('quoteDisplayBox').textContent = quoteText;
+      document.getElementById('authorDisplayBox').textContent = "— " + authorText;
+
+      document.getElementById('nextStateBtn').disabled = false;
+    };
+
+    animateRotationTimelineTracker();
+  }
+
+  document.getElementById('btnCustomText').addEventListener('click', () => {
+    const userText = prompt("Enter your custom text:");
+    if(userText && userText.trim() !== "") {
+      const userAuthor = prompt("Author name:") || "Creator Core";
+      activeLoadedPayload = { text: userText, author: userAuthor, mood: "custom" };
+      document.getElementById('quoteDisplayBox').textContent = userText;
+      document.getElementById('authorDisplayBox').textContent = "— " + userAuthor;
+      sendAppToast("Text Updated!");
+    }
+  });
+
+  document.getElementById('btnFontTheme').addEventListener('click', () => {
+    currentFontThemeIdx = (currentFontThemeIdx + 1) % fontThemes.length;
+    document.documentElement.style.setProperty('--font-family-chosen', fontThemes[currentFontThemeIdx]);
+    sendAppToast(`Font: ${fontThemeNames[currentFontThemeIdx]}`);
+  });
+
+  document.getElementById('btnToggleGlow').addEventListener('click', function() {
+    const isPulse = document.getElementById('quoteDisplayBox').classList.toggle('pulse-active');
+    this.classList.toggle('active-toggle', isPulse);
+  });
+
+  document.getElementById('btnAlign').addEventListener('click', () => {
+    currentAlignIdx = (currentAlignIdx + 1) % alignmentModes.length;
+    const align = alignmentModes[currentAlignIdx];
+    document.documentElement.style.setProperty('--text-align', align);
+    const div = document.getElementById('divider');
+    div.style.margin = align === 'center' ? '32px auto 24px' : (align === 'left' ? '32px auto 24px 0' : '32px 0 24px auto');
+    sendAppToast(`Align: ${align.toUpperCase()}`);
+  });
+
+  document.getElementById('btnFontInc').addEventListener('click', () => { if(currentFontScale < 1.5) { currentFontScale += 0.05; document.documentElement.style.setProperty('--font-scale', currentFontScale); } });
+  document.getElementById('btnFontDec').addEventListener('click', () => { if(currentFontScale > 0.8) { currentFontScale -= 0.05; document.documentElement.style.setProperty('--font-scale', currentFontScale); } });
+  document.getElementById('btnBlurInc').addEventListener('click', () => { currentBlurVal = (currentBlurVal + 4) > 16 ? 0 : currentBlurVal + 4; document.documentElement.style.setProperty('--bg-blur', `${currentBlurVal}px`); sendAppToast(`Blur: ${currentBlurVal}px`); });
+  document.getElementById('btnBlurReset').addEventListener('click', () => { currentBlurVal = 0; document.documentElement.style.setProperty('--bg-blur', `0px`); sendAppToast(`Blur Reset`); });
+  document.getElementById('btnExposure').addEventListener('click', function() { currentBrightnessIdx = (currentBrightnessIdx + 1) % brightnessConfigs.length; document.documentElement.style.setProperty('--bg-brightness', brightnessConfigs[currentBrightnessIdx]); this.textContent = `Exposure: ${brightnessLabels[currentBrightnessIdx]}`; });
+  document.getElementById('btnToggleGlass').addEventListener('click', function() { const isGlass = document.getElementById('mainCardFrame').classList.toggle('glass-enabled'); this.classList.toggle('active-toggle', isGlass); });
+  
+  document.getElementById('btnToggleLoop').addEventListener('click', function() {
+    autoAdvanceActive = !autoAdvanceActive;
+    this.textContent = autoAdvanceActive ? "Auto Stream 🔄" : "Paused ⏸️";
+    if(!autoAdvanceActive) { clearTimeout(loopTimerReference); document.getElementById('timelineBar').style.width = '0%'; } 
+    else { triggerManualPipelineAdvance(); }
+  });
+
+  function runSystemTimelineLoop() {
+    if(!autoAdvanceActive) return;
+    animateRotationTimelineTracker();
+    loopTimerReference = setTimeout(() => { syncWorkloadPipelineData(); runSystemTimelineLoop(); }, LOOP_INTERVAL);
+  }
+
+  function animateRotationTimelineTracker() {
+    const progressNode = document.getElementById('timelineBar');
+    progressNode.style.transition = 'none'; progressNode.style.width = '0%';
+    setTimeout(() => { if(autoAdvanceActive) { progressNode.style.transition = `width ${LOOP_INTERVAL}ms linear`; progressNode.style.width = '100%'; } }, 40);
+  }
+
+  function triggerManualPipelineAdvance() { clearTimeout(loopTimerReference); syncWorkloadPipelineData(); if(autoAdvanceActive) runSystemTimelineLoop(); }
+  document.getElementById('nextStateBtn').addEventListener('click', triggerManualPipelineAdvance);
+
+  document.getElementById('copyTextBtn').addEventListener('click', () => {
+    if(!activeLoadedPayload) return;
+    navigator.clipboard.writeText(`"${activeLoadedPayload.text}" — ${activeLoadedPayload.author}`).then(() => sendAppToast("Copied!"));
+  });
+
+  document.getElementById('exportAssetBtn').addEventListener('click', () => {
+    if(!activeLoadedPayload) return;
+    sendAppToast("Exporting Layout...");
+    const W = 1920, H = 1080;
+    const canvas = document.getElementById('renderCanvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    const canvasBgImg = new Image();
+    canvasBgImg.crossOrigin = "anonymous";
+    canvasBgImg.onload = () => {
+      const scale = Math.max(W / canvasBgImg.width, H / canvasBgImg.height);
+      ctx.drawImage(canvasBgImg, (W - canvasBgImg.width * scale)/2, (H - canvasBgImg.height * scale)/2, canvasBgImg.width * scale, canvasBgImg.height * scale);
+      drawPureTextOverlay();
+    };
+    canvasBgImg.onerror = () => { ctx.fillStyle = "#010103"; ctx.fillRect(0,0,W,H); drawPureTextOverlay(); };
+    canvasBgImg.src = `https://picsum.photos/id/${lastAssignedImageId}/1920/1080`;
+
+    function drawPureTextOverlay() {
+      if(currentBlurVal > 0) { ctx.filter = `blur(${currentBlurVal}px)`; ctx.drawImage(canvas, 0, 0); ctx.filter = 'none'; }
+      ctx.fillStyle = `rgba(0,0,0, ${1 - brightnessConfigs[currentBrightnessIdx]})`; ctx.fillRect(0,0,W,H);
+      const align = alignmentModes[currentAlignIdx];
+      let tx = align === 'left' ? 150 : (align === 'right' ? W - 150 : W / 2);
+      ctx.textAlign = align;
+      const accentColor = WORKLOAD_SEGMENTS.find(s=>s.key===activeCategory)?.color || "#00ffff";
+
+      if(document.getElementById('mainCardFrame').classList.contains('glass-enabled')) {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; ctx.strokeStyle = accentColor; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.roundRect ? ctx.roundRect(W/2 - 450, H/2 - 280, 900, 560, 24) : ctx.rect(W/2 - 450, H/2 - 280, 900, 560); ctx.fill(); ctx.stroke();
+      }
+
+      const fontSelectedExport = currentFontThemeIdx === 0 ? "Georgia, serif" : (currentFontThemeIdx === 1 ? "'Work Sans', sans-serif" : "Courier New, monospace");
+      ctx.fillStyle = accentColor; ctx.font = `bold 140px ${fontSelectedExport}`; ctx.fillText("“", align === 'center' ? W/2 : tx, H/2 - 170);
+      ctx.fillStyle = "#ffffff"; ctx.font = `bold 60px ${fontSelectedExport}`;
+      
+      const lines = []; let currentLine = ""; const words = activeLoadedPayload.text.split(" ");
+      const maxW = document.getElementById('mainCardFrame').classList.contains('glass-enabled') ? 800 : W - 400;
+      words.forEach(w => {
+        let test = currentLine ? currentLine + " " + w : w;
+        if(ctx.measureText(test).width > maxW) { lines.push(currentLine); currentLine = w; } else { currentLine = test; }
+      });
+      if(currentLine) lines.push(currentLine);
+
+      let startY = (H - (lines.length * 84)) / 2;
+      lines.forEach(l => { ctx.fillText(l, tx, startY); startY += 84; });
+      ctx.fillStyle = accentColor;
+      ctx.fillRect(align === 'center' ? (W - 150)/2 : (align === 'right' ? W - 300 : 150), startY + 45, 150, 6);
+      ctx.fillStyle = "rgba(255,255,255,0.85)"; ctx.font = `italic 40px ${fontSelectedExport}`;
+      ctx.fillText("— " + activeLoadedPayload.author, tx, startY + 115);
+
+      canvas.toBlob(blob => {
+        const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
+        link.download = `MusingWallpaper-${Date.now()}.png`; link.click();
+        sendAppToast("PNG Saved!");
+      }, "image/png");
+    }
+  });
+
+  let toastTimerRef;
+  function sendAppToast(msg) { clearTimeout(toastTimerRef); const toast = document.getElementById('appNotificationToast'); toast.textContent = msg; toast.classList.add('active'); toastTimerRef = setTimeout(() => toast.classList.remove('active'), 2000); }
+
+  syncWorkloadPipelineData();
+  runSystemTimelineLoop();
+})();
+</script>
+</body>
+</html>
