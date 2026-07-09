@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quote & Wallpaper Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="wallpaper-bg"></div>
+    <div class="overlay"></div>
+
+    <div class="container">
+        <div class="quote-box">
+            <p id="quote-text">"Click the button to fetch an inspirational quote!"</p>
+            <h3 id="quote-author">- InternGrow</h3>
+        </div>
+
+        <div class="button-group">
+            <button id="new-quote-btn">🔄 New Quote</button>
+            <button id="save-quote-btn">❤️ Save Quote</button>
+            <button id="set-wallpaper-btn">🖼️ Set Wallpaper</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
